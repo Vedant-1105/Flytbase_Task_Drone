@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import { ApiError } from "../utils/ApiError";
 import ApiResponse from "../utils/ApiResponse";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 import MisssionModel from "../models/Mission.model";
+import DroneModel from "../models/Drone.model";
 
 interface Waypoint {
     alt: number;
@@ -88,6 +89,34 @@ const addMission = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+const deleteMission = async (req: Request, res: Response): Promise<any> =>{
+    try {
+        const { missionId } = req.body as { missionId: string };
+
+        if(!missionId){
+            return res.status(400).json(new ApiError(400, "Mission ID is required", false));
+        }
+
+        if (!Types.ObjectId.isValid(missionId)) {
+            res.status(400).json(new ApiError(400, "Invalid Drone Id format"));
+            return;
+        }
+
+        console.log(typeof(missionId));
+        const isdeleted = await MisssionModel.findOneAndDelete({_id:missionId});
+
+        if(!isdeleted){
+            return res.status(404).json(new ApiError(404, "Mission not found", false));
+        }
+
+        return res.status(201).json(new ApiResponse(201 ,null , "Mission Deleted Succesfully"))
+
+    } catch (error) {
+        console.log("Error While Deleting Mission")
+        console.log(error)
+    }
+}
 
 
-export { addMission }
+
+export { addMission , deleteMission }

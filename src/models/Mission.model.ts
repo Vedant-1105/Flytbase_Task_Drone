@@ -103,5 +103,25 @@ MissionSchema.pre("save",async function(next){
 
 })
 
+MissionSchema.post("findOneAndDelete" , async function(doc) {
+    const dronId = doc._id ;
+    try {
+        const user = await UserModel.findById(doc.createdby);
+        if(!user){
+            console.log("user Not found");
+            return;
+        }
+        console.log(doc._id);
+        if(doc._id){
+            const missionId = doc._id as mongoose.Schema.Types.ObjectId;
+            user.missions = user.missions.filter(doc_id => missionId!==doc_id);
+            await user.save({ validateBeforeSave: false });
+        }
+        
+    } catch (error) {
+        console.log("Error While Deleting Mission From User DB",error);
+    }
+})
+
 export const MisssionModel = (mongoose.models.Misssion as mongoose.Model<Mission>) || (mongoose.model("Mission",MissionSchema));
 export default MisssionModel;

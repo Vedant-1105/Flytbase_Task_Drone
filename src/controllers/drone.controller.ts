@@ -60,7 +60,7 @@ const deleteDrone = async (req: Request, res: Response): Promise<void> => {
          return;
       }
 
-      const deletedDrone = await DroneModel.findByIdAndDelete(droneId);
+      const deletedDrone = await DroneModel.findOneAndDelete({_id:droneId});
       
       if (!deletedDrone) {
          res.status(404).json(new ApiError(404, "Drone not found or already deleted"));

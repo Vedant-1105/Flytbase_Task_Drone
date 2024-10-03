@@ -56,6 +56,19 @@ DroneSchema.pre("save" , async function(next){
     next();
 })
 
+DroneSchema.post("findOneAndDelete" , async function(doc){
+    const dronId = doc._id;
+    const userId = doc.createdBy;
+    const user = await UserModel.findById(userId);
+    if(user){
+        const index = user.drones.indexOf(dronId);
+        if(index > -1){
+            user.drones.splice(index , 1);
+            await user.save({validateBeforeSave:false});
+        }
+    }
+})
+
 
 export const DroneModel = (mongoose.models.Drone as mongoose.Model<Drone>) || (mongoose.model("Drone",DroneSchema));
 export default DroneModel;
