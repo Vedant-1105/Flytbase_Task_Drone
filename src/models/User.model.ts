@@ -9,9 +9,13 @@ export interface User extends Document {
     username: string,
     email: string,
     password: string,
-    drones: mongoose.Types.ObjectId[],
-    missions: mongoose.Types.ObjectId[],
-    refreshToken: string
+    drones: mongoose.Schema.Types.ObjectId[],
+    missions: mongoose.Schema.Types.ObjectId[],
+    refreshToken: string,
+
+    isPasswordCorrect: (password: string) => Promise<boolean>;
+    generateAccessToken: () => Promise<string>;  // Promise because it's async
+    generateRefreshToken: () => Promise<string>;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -57,13 +61,13 @@ UserSchema.methods.isPasswordCorrect = async function(password:string):Promise<b
     return isMatch;
 }
 
-UserSchema.methods.generateAccessToken = async function() {
+UserSchema.methods.generateAccessToken = async function():Promise<string> {
     const user = this as User;
     const secret:any = process.env.ACCESS_TOKEN_SECRET
     return jwt.sign(
         {
             _id: user._id,
-            username: user.username,
+            username: user.username
         },
         secret,
         {
@@ -72,7 +76,7 @@ UserSchema.methods.generateAccessToken = async function() {
     )
 }
 
-UserSchema.methods.generateRefreshToken = async function(){
+UserSchema.methods.generateRefreshToken = async function():Promise<string>{
     const user = this as User;
     return jwt.sign(
         {
