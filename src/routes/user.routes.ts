@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCurrentUserDetails, loginUser, signupUser } from "../controllers/user.controller";
+import { deleteUser, getCurrentUserDetails, loginUser, signupUser } from "../controllers/user.controller";
 import { verifyToken } from "../middleware/auth.middlewar";
 
 
@@ -14,6 +14,7 @@ router.route('/login').post(loginUser)
 
 
 //Protected Routes
+router.route('/delete').delete(verifyToken , deleteUser);
 router.route('/getUserDetails').get( verifyToken , getCurrentUserDetails);
 
 

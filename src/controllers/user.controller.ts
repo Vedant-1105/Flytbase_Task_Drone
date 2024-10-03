@@ -15,6 +15,8 @@ export interface tokens {
    accessToken: string,
    refreshToken: string
 }
+
+
 const generateAccessAndRefreshToken = async (userId: ObjectId): Promise<tokens> => {
    try {
       const user = await UserModel.findById(userId);
@@ -35,7 +37,6 @@ const generateAccessAndRefreshToken = async (userId: ObjectId): Promise<tokens> 
       return { accessToken: "", refreshToken: "" };
    }
 }
-
 
 const signupUser = async (req: Request, res: Response) => {
    try {
@@ -78,7 +79,6 @@ const signupUser = async (req: Request, res: Response) => {
       // throw new ApiError(500 , "Error While Creating new User")
    }
 }
-
 
 const loginUser = async (req: Request, res: Response) => {
    try {
@@ -125,7 +125,6 @@ const loginUser = async (req: Request, res: Response) => {
    }
 }
 
-
 const getCurrentUserDetails = async (req: Request, res: Response):Promise<any> => {
    try {
       const userId: ObjectId = req.body.userId as ObjectId;
@@ -148,7 +147,25 @@ const getCurrentUserDetails = async (req: Request, res: Response):Promise<any> =
    }
 };
 
+const deleteUser = async (req:Request , res:Response):Promise<any> =>{
+   try {
+      const userId: ObjectId = req.body.userId as ObjectId;
+      if(!userId){
+         res.status(404).send(new ApiError(404, "User ID Not found in request"))
+      }
+      const isDeleted = await UserModel.findByIdAndDelete(userId);
+      if(!isDeleted){
+         return res.status(404).json(new ApiError(404, "User Not Found or alredy Deleted "))
+      }
+      return res.status(200).json(new ApiResponse(200, null, "User Deleted Successfully"))
+
+   } catch (error) {
+      console.log("Error While deleteing User");
+      console.log(error)
+   }
+}
 
 
 
-export { signupUser, loginUser , getCurrentUserDetails}
+
+export { signupUser, loginUser , getCurrentUserDetails , deleteUser}
