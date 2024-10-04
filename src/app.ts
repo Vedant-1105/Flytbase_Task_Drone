@@ -37,8 +37,13 @@ app.use('/api/v1/drone',droneRouter);
 
 //Mission Routes
 import missionRouter from './routes/mission.routes'
-
 app.use('/api/v1/mission',missionRouter)
 
+
+
+//Simulation Routes 
+import simulationRouter from './routes/simulation.routes'
+
+app.use('/api/v1/simulation',simulationRouter)
 
 export {app}

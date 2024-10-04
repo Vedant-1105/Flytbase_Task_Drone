@@ -1,7 +1,10 @@
 import mongoose , {Schema ,Document, ObjectId} from "mongoose";
 import UserModel from "./User.model";
 
-interface Waypoint {
+
+
+
+export interface Waypoint {
     alt: number;
     lat: number;
     lng: number;
@@ -22,6 +25,8 @@ export interface Mission extends Document{
     drone:mongoose.Types.ObjectId,
     createdby:mongoose.Types.ObjectId
 }
+
+
 const WaypointSchema = new Schema<Waypoint>({
     alt: {
       type: Number,

@@ -129,7 +129,7 @@ const getCurrentUserDetails = async (req: Request, res: Response):Promise<any> =
    try {
       const userId: ObjectId = req.body.userId as ObjectId;
       if(!userId){
-         res.status(404).send(new ApiError(404, "User ID Not found in request"))
+         return res.status(404).send(new ApiError(404, "User ID Not found in request"))
       }
 
       const user = await UserModel.findById(userId)
